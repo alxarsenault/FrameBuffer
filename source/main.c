@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 
+#include <sys/time.h>
 
 #include "CFrameBuffer.h"
 
@@ -119,18 +120,12 @@ void eosFrameBuffer_DrawBackBuffer(eosFrameBuffer* fb, CFrameBuffer* bf)
 	int mem_index;
 	int bf_index;
 	for (y = 0; y < 768; y++) {
-        	for (x = 0; x < 1366; x++) {
-			mem_index = ((y + yoffset) * line_byte) + ((x + xoffset) * byte_per_pixel);			
-			bf_index = y * bf->w + x;
-			*((CColor*)(buf + mem_index)) = bf->data[bf_index];			
-	
-                	//*(buf + mem_index) = (unsigned char)bf->data[];   // Blue.
-                	//*(buf + mem_index + 1) = (unsigned char)0; // Red.
-                	//*(buf + mem_index + 2) = (unsigned char)0; // Green.
-                	//*(buf + mem_index + 3) = (unsigned char)0; // alpha.
-        	}
+		mem_index = ((y + yoffset) * line_byte);			
+		bf_index = y * bf->w;
+		memcpy((CColor*)(buf + mem_index), &bf->data[bf_index], bf->w * sizeof(CColor));
 	}
 }
+
 int main()
 {
 	eosFrameBuffer fb;
@@ -139,6 +134,13 @@ int main()
 	}
 
 	CFrameBuffer bf = CreateFrameBuffer(1366, 768);
+
+	struct timeval start, end;
+ 
+    	long mtime, seconds, useconds;    
+ 
+    	gettimeofday(&start, NULL);
+ 
 	
 	// Draw background rectangle.
 	CRect bg_rect = CreateRect(100, 100, 200, 200);
@@ -177,14 +179,34 @@ int main()
 
 	// Draw image resize.
 	CImage image = CreateImageFromBitmap("resources/umbrella2.bmp");
-	CPoint img_pos = CPoint_Create(51, 51);
-	CSize img_size = CreateSize(99, 99);
+	CPoint img_pos = CPoint_Create(300, 51);
+	CSize img_size = CreateSize(500, 500);
 	DrawImageResize(&bf, &image, &img_pos, &img_size);	
 
 	eosFrameBuffer_Draw(&fb);
 	eosFrameBuffer_DrawBackBuffer(&fb, &bf);
-	eosFrameBuffer_Close(&fb);
+    	
+	gettimeofday(&end, NULL);
+    	seconds  = end.tv_sec  - start.tv_sec;
+    	useconds = end.tv_usec - start.tv_usec;
+    	mtime = seconds + useconds;
+   	printf("Elapsed time: %d ms\n", mtime / 1000);
 
+	gettimeofday(&start, NULL);
+	
+	DrawRectangle(&bf, &bg_rect, &bg_color);
+	DrawString(&bf, &font, "Monster Truck", &str_pos, &str_color);
+	DrawString(&bf, &font, "Monster Truck", &str2_pos, &str2_color);
+	DrawImageResize(&bf, &image, &img_pos, &img_size);
+	eosFrameBuffer_DrawBackBuffer(&fb, &bf);
+
+	gettimeofday(&end, NULL);
+	seconds  = end.tv_sec  - start.tv_sec;
+        useconds = end.tv_usec - start.tv_usec;
+        mtime = seconds + useconds;
+        printf("Elapsed time: %d ms\n", mtime / 1000);
+
+	eosFrameBuffer_Close(&fb);
 	//printf("FIX:\n");
 	//printf("FB len         : %d\n", m_FixInfo.smem_len);
 	//printf("FB type        : %d\n", m_FixInfo.type);

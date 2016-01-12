@@ -26,8 +26,7 @@ CFrameBuffer CreateFrameBuffer(int width, int height)
 
 void SetPixelColor(CFrameBuffer* fb, int y, int x, CColor* color)
 {
-	const unsigned long index = y * fb->w + x;
-	fb->data[index] = *color;
+	fb->data[y * fb->w + x] = *color;
 }
 
 void DrawLine(CFrameBuffer* fb, CPoint* p0, CPoint* p1, CColor* color)
@@ -202,6 +201,10 @@ void DrawImage(CFrameBuffer* fb, CImage* image, CPoint* pos)
 	}
 }
 
+typedef struct _BGR {
+	unsigned char b, g, r;
+}BGR;
+
 void DrawImageResize(CFrameBuffer* fb, CImage* image, CPoint* pos, CSize* size)
 {
 	if (image->is_loaded == 0) {
@@ -224,14 +227,16 @@ void DrawImageResize(CFrameBuffer* fb, CImage* image, CPoint* pos, CSize* size)
 	float y_img_index = 0.0f;
 	float x_img_index = 0.0f;
 
-	CColor* image_pixels = (CColor*)image->data;
+
+	BGR* image_pixels = (BGR*)image->data;
 
 	for (int y = 0; y < draw_h; y++) {
 		for (int x = 0; x < draw_w; x++) {
 			unsigned long img_pixel_index = floor(y_img_index) * img_w + floor(x_img_index);
-			CColor* pixel = &image_pixels[img_pixel_index];
-
-			SetPixelColor(fb, iy + y, ix + x, pixel);
+			CColor pixel = *((CColor*)&image_pixels[img_pixel_index]);
+			pixel.a = (unsigned char)255;
+			
+			SetPixelColor(fb, iy + y, ix + x, &pixel);
 
 			x_img_index += resize_step_x;
 

@@ -11,7 +11,7 @@ ARCH := $(shell getconf LONG_BIT)
 PROCESSOR_TYPE := $(shell uname -m)
 
 CC = gcc
-CC_FLAGS = -std=c99 
+CC_FLAGS = -std=c99 -O3 
 INCLUDE_SRC = -Iinclude/
 
 LINKER_INC = 

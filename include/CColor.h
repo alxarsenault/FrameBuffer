@@ -11,7 +11,7 @@
 
 typedef struct _CColor {
 //	unsigned char r, g, b;
-	unsigned char b, g, r;
+	unsigned char b, g, r, a;
 } CColor;
 
 CColor CreateColor(int r, int g, int b);

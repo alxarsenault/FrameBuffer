@@ -7,7 +7,7 @@
 //
 
 #include <stdio.h>
-
+#include <math.h>
 #include "CDebug.h"
 #include "CFrameBuffer.h"
 

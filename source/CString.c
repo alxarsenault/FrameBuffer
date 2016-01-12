@@ -76,7 +76,7 @@ int CString_CompareCharPtr(const CString* string1, const char* string2)
 void CString_AppendChar(CString* string, char c)
 {
 	char* tmp_str = malloc(string->size + 1);
-	strlcpy(tmp_str, string->data, string->size);
+	memcpy(tmp_str, string->data, string->size);
 	
 	// Add character.
 	tmp_str[string->size - 1] = c;

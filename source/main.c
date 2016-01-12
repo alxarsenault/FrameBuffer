@@ -141,11 +141,45 @@ int main()
 	CFrameBuffer bf = CreateFrameBuffer(1366, 768);
 	
 	// Draw background rectangle.
-	CRect bg_rect = CreateRect(0, 0, 499, 499);
+	CRect bg_rect = CreateRect(100, 100, 200, 200);
 	CColor bg_color = CreateColor(240, 0, 0);
 	DrawRectangle(&bf, &bg_rect, &bg_color);
 
-	
+	// Draw rectangle contour.
+	//CColor contour_color = CreateColor(0, 0, 0);
+	//DrawRectangleContour(&bf, &bg_rect, &contour_color);
+
+	// Draw diagonal line.
+	//CPoint p0 = CPoint_Create(0, 499);
+	//CPoint p1 = CPoint_Create(499, 0);
+	//CColor p_color = CreateColor(255, 255, 0);
+	//DrawLine(&bf, &p0, &p1, &p_color);
+
+	// Draw char.
+	CFont font = CreateFont("resources/test.myfont");
+	//CPoint char_pos = CPoint_Create(300, 100);
+	//CColor char_color = CreateColor(255, 255, 255);
+	//DrawChar(&bf, &font, 'P', &char_pos, &char_color);
+
+	// Draw text.
+	CPoint str_pos = CPoint_Create(100, 200);
+	CColor str_color = CreateColor(180, 180, 180);
+	DrawString(&bf, &font, "Monster Truck", &str_pos, &str_color);
+
+	// Draw text.
+	CPoint str2_pos = CPoint_Create(100, 220);
+	CColor str2_color = CreateColor(10, 180, 180);
+	DrawString(&bf, &font, "Monster Truck", &str2_pos, &str2_color);
+
+	// Get text width.
+	//CString mst_str = CString_Create("Monster Truck");
+	//printf("Monster Truck width : %d\n", GetStringXSize(&font, &mst_str));
+
+	// Draw image resize.
+	CImage image = CreateImageFromBitmap("resources/umbrella2.bmp");
+	CPoint img_pos = CPoint_Create(51, 51);
+	CSize img_size = CreateSize(99, 99);
+	DrawImageResize(&bf, &image, &img_pos, &img_size);	
 
 	eosFrameBuffer_Draw(&fb);
 	eosFrameBuffer_DrawBackBuffer(&fb, &bf);
